@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.goodskill.common.core.entity.BaseColEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -19,9 +19,9 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
 public class RolePermission extends BaseColEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID=1L;
 
     @TableId(value = "id", type = IdType.AUTO)

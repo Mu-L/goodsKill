@@ -57,8 +57,20 @@ spring:
             - Path=/admin/**
           filters:
             - StripPrefix=1
+        - id: prefixpath_route
+          uri: lb://goodskill-web
+          predicates:
+            - Path=/api/test
+          filters:
+            - RedirectTo=302, https://www.baidu.com, true
+  data:
+    redis:
+      password: 123456
+      host: redis
   main:
     allow-bean-definition-overriding: true
+
+# 监控
 management:
   endpoint:
     health:
@@ -73,13 +85,16 @@ nacos:
     data:
       id: goodskill-gateway-routes
 
+#接口白名单
 security:
   ignore:
     whiteUrl:
-      - '/goodskill/web/auth/login'
-      - '/goodskill/web/auth/logout'
+      - "/api/auth/login"
+      - "/api/web/**"
+    loginUserWhiteUrls:
+      - "/api/xxx"
 
-
+# knife4j配置
 knife4j:
   gateway:
     enabled: true
@@ -88,14 +103,52 @@ knife4j:
     routes:
       - name: web服务
         service-name: goodskill-web
-        url: /goodskill/web/v3/api-docs?group=default
-        context-path: /goodskill/web
+        url: /api/web/v3/api-docs?group=default
         order: 1
+        context-path: /api/web
+      - name: 认证服务
+        service-name: goodskill-auth
+        url: /api/auth/v3/api-docs?group=default
+        order: 3
+        context-path: /api/auth
+      - name: 订单服务
+        service-name: goodskill-order
+        url: /api/order/v3/api-docs?group=default
+        order: 4
+        context-path: /api/order
+      - name: seata服务
+        service-name: goodskill-seata
+        url: /api/seata/v3/api-docs?group=default
+        order: 5
+        context-path: /api/seata
+      - name: 秒杀服务
+        service-name: goodskill-service-provider
+        url: /api/seckill/v3/api-docs?group=default
+        order: 6
+        context-path: /api/seckill
     discover:
       enabled: true
       # 指定版本号(Swagger2|OpenAPI3)
       version : openapi3
 
+############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
+sa-token:
+  # token 名称（同时也是 cookie 名称）
+  token-name: access_token
+  # token 有效期（单位：秒） 默认30天，-1 代表永久有效
+  timeout: 2592000
+  # token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结，默认-1 代表不限制，永不冻结
+  active-timeout: -1
+  # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个 token （为 true 时所有登录共用一个 token, 为 false 时每次登录新建一个 token）
+  is-share: true
+  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
+  token-style: simple-uuid
+  # 是否输出操作日志
+  is-log: true
+  # 关闭banner打印
+  is-print: true
 
 ---
 spring:
