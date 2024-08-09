@@ -1,24 +1,20 @@
 package com.goodskill.order.entity;
 
-import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author techa03
- * @date 2020/5/24
+ * @date 2019/4/3
  */
 @Data
-@Builder
-@Document
-public class SuccessKilled {
-
-    @Id
-    private String id;
+public class OrderDTO implements Serializable {
+    @Serial
+    private static final long serialVersionUID=1L;
 
     private BigInteger seckillId;
 
@@ -26,11 +22,12 @@ public class SuccessKilled {
 
     private Byte status;
 
-    private Date createTime;
+    private LocalDateTime createTime;
 
     private String serverIp;
 
     private String userIp;
 
     private String userId;
+
 }
